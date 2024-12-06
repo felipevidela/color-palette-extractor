@@ -85,6 +85,19 @@ Requirements
 - scikit-learn
 - matplotlib
 
+## 🎨 Examples
+
+### Example 1: Desert Scene
+![Desert Scene](examples/blade_runner_scene1.jpg)
+Generated color palette:
+![Desert Palette](examples/blade_runner_palette1.png)
+
+### Example 2: Neon Scene
+![Neon Scene](examples/blade_runner_scene2.jpg)
+Generated color palette:
+![Neon Palette](examples/blade_runner_palette2.png)
+
+
 Contributing
 Feel free to fork the project and submit pull requests.
 License
