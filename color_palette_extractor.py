@@ -3,135 +3,135 @@ import numpy as np
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 
-def cargar_imagen(ruta):
-    """Carga una imagen desde la ruta especificada y la convierte a RGB."""
+def load_image(path):
+    """Loads an image from the specified path and converts it to RGB."""
     try:
-        imagen = cv2.imread(ruta)
-        if imagen is None:
-            print("Error: No se pudo cargar la imagen. Verifica la ruta.")
+        image = cv2.imread(path)
+        if image is None:
+            print("Error: Could not load image. Verify the path.")
             return None
         
-        # Verificar tamaño de imagen
-        if imagen.size > 1920 * 1080 * 3:  # Limitar a resolución Full HD
-            print("Advertencia: Imagen muy grande. Redimensionando...")
-            scale = np.sqrt((1920 * 1080) / (imagen.shape[0] * imagen.shape[1]))
-            nueva_altura = int(imagen.shape[0] * scale)
-            nueva_anchura = int(imagen.shape[1] * scale)
-            imagen = cv2.resize(imagen, (nueva_anchura, nueva_altura))
+        # Check image size
+        if image.size > 1920 * 1080 * 3:  # Limit to Full HD resolution
+            print("Warning: Image too large. Resizing...")
+            scale = np.sqrt((1920 * 1080) / (image.shape[0] * image.shape[1]))
+            new_height = int(image.shape[0] * scale)
+            new_width = int(image.shape[1] * scale)
+            image = cv2.resize(image, (new_width, new_height))
             
-        return cv2.cvtColor(imagen, cv2.COLOR_BGR2RGB)
+        return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     except Exception as e:
-        print(f"Error al cargar la imagen: {e}")
+        print(f"Error loading image: {e}")
         return None
 
-def extraer_colores(imagen, num_colores):
-    """Extrae colores dominantes usando K-Means."""
+def extract_colors(image, num_colors):
+    """Extracts dominant colors using K-Means."""
     try:
-        pixels = imagen.reshape((-1, 3))
-        kmeans = KMeans(n_clusters=num_colores, random_state=42)
+        pixels = image.reshape((-1, 3))
+        kmeans = KMeans(n_clusters=num_colors, random_state=42)
         kmeans.fit(pixels)
         return kmeans.cluster_centers_.astype(int)
     except Exception as e:
-        print(f"Error al extraer colores: {e}")
+        print(f"Error extracting colors: {e}")
         return None
 
-def mostrar_paleta(colores):
-    """Muestra la paleta de colores dominantes y sus valores RGB."""
-    if colores is None:
+def show_palette(colors):
+    """Shows the dominant color palette and their RGB values."""
+    if colors is None:
         return
     
-    num_colores = len(colores)
+    num_colors = len(colors)
     palette = np.zeros((100, 300, 3), dtype='uint8')
-    step = 300 // num_colores
+    step = 300 // num_colors
     
     plt.figure(figsize=(10, 4))
     
-    # Crear paleta visual
-    for i, color in enumerate(colores):
+    # Create visual palette
+    for i, color in enumerate(colors):
         palette[:, i * step:(i + 1) * step] = color
         
     plt.imshow(palette)
     plt.axis('off')
     
-    # Mostrar valores RGB
-    print("\nValores RGB de los colores dominantes:")
-    for i, color in enumerate(colores, 1):
+    # Show RGB values
+    print("\nRGB values of dominant colors:")
+    for i, color in enumerate(colors, 1):
         print(f"Color {i}: RGB{tuple(color)}")
     
     plt.show()
 
-def guardar_paleta(colores, ruta_salida):
-    """Guarda la paleta de colores como imagen."""
+def save_palette(colors, output_path):
+    """Saves the color palette as an image."""
     try:
-        num_colores = len(colores)
+        num_colors = len(colors)
         palette = np.zeros((100, 300, 3), dtype='uint8')
-        step = 300 // num_colores
+        step = 300 // num_colors
         
-        for i, color in enumerate(colores):
+        for i, color in enumerate(colors):
             palette[:, i * step:(i + 1) * step] = color
             
-        # Convertir de RGB a BGR para guardar con cv2
+        # Convert from RGB to BGR to save with cv2
         palette_bgr = cv2.cvtColor(palette, cv2.COLOR_RGB2BGR)
-        cv2.imwrite(ruta_salida, palette_bgr)
-        print(f"Paleta guardada exitosamente en {ruta_salida}")
+        cv2.imwrite(output_path, palette_bgr)
+        print(f"Palette successfully saved to {output_path}")
         return True
     except Exception as e:
-        print(f"Error al guardar la paleta: {e}")
+        print(f"Error saving palette: {e}")
         return False
 
 def menu():
-    print("\nMenú de opciones:")
-    print("1. Cargar imagen")
-    print("2. Generar paleta de colores")
-    print("3. Guardar paleta actual")
-    print("4. Salir")
+    print("\nOptions menu:")
+    print("1. Load image")
+    print("2. Generate color palette")
+    print("3. Save current palette")
+    print("4. Exit")
 
 def main():
-    imagen = None
-    colores_actuales = None
+    image = None
+    current_colors = None
     
     while True:
         menu()
-        opcion = input("Selecciona una opción: ")
+        option = input("Select an option: ")
         
-        if opcion == "1":
-            ruta = input("Ingresa la ruta de la imagen: ")
-            imagen = cargar_imagen(ruta)
-            if imagen is not None:
-                print("Imagen cargada exitosamente.")
+        if option == "1":
+            path = input("Enter image path: ")
+            image = load_image(path)
+            if image is not None:
+                print("Image successfully loaded.")
                 
-        elif opcion == "2":
-            if imagen is None:
-                print("Primero debes cargar una imagen.")
+        elif option == "2":
+            if image is None:
+                print("You must load an image first.")
                 continue
                 
             try:
-                num_colores = int(input("Ingresa el número de colores dominantes (ej. 5): "))
-                if num_colores <= 0:
-                    print("Por favor, ingresa un número mayor a 0.")
+                num_colors = int(input("Enter the number of dominant colors (e.g. 5): "))
+                if num_colors <= 0:
+                    print("Please enter a number greater than 0.")
                     continue
                     
-                colores_actuales = extraer_colores(imagen, num_colores)
-                if colores_actuales is not None:
-                    print("Paleta generada. Mostrando colores dominantes...")
-                    mostrar_paleta(colores_actuales)
+                current_colors = extract_colors(image, num_colors)
+                if current_colors is not None:
+                    print("Palette generated. Showing dominant colors...")
+                    show_palette(current_colors)
             except ValueError:
-                print("Por favor, ingresa un número válido.")
+                print("Please enter a valid number.")
                 
-        elif opcion == "3":
-            if colores_actuales is None:
-                print("Primero debes generar una paleta de colores.")
+        elif option == "3":
+            if current_colors is None:
+                print("You must generate a color palette first.")
                 continue
                 
-            ruta_salida = input("Ingresa la ruta para guardar la paleta (ej. paleta.png): ")
-            guardar_paleta(colores_actuales, ruta_salida)
+            output_path = input("Enter path to save palette (e.g. palette.png): ")
+            save_palette(current_colors, output_path)
             
-        elif opcion == "4":
-            print("Saliendo del programa. ¡Adiós!")
+        elif option == "4":
+            print("Exiting program. Goodbye!")
             break
             
         else:
-            print("Opción no válida. Intenta de nuevo.")
+            print("Invalid option. Try again.")
 
 if __name__ == "__main__":
     main()
