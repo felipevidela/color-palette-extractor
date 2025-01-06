@@ -40,15 +40,27 @@ def extract_colors(image, num_colors):
 
 def create_palette_image(colors):
     """Create an image displaying the color palette"""
-    palette = np.zeros((100, 500, 3), dtype=np.uint8)
-    step = 500 // len(colors)
+    width = 500
+    height = 100
+    palette = np.zeros((height, width, 3), dtype=np.uint8)
+    n_colors = len(colors)
     
+    # Calcular el ancho exacto de cada sección
+    section_width = width // n_colors
+    remaining_pixels = width % n_colors
+    
+    current_position = 0
     for i, color in enumerate(colors):
-        # Usar slicing exacto sin transiciones
-        start = i * step
-        end = (i + 1) * step if i < len(colors) - 1 else 500
-        palette[:, start:end] = color
-        
+        # Ajustar el ancho de la última sección para incluir píxeles restantes
+        if i == n_colors - 1:
+            section_end = width
+        else:
+            section_end = current_position + section_width
+            
+        # Asignar color a la sección completa
+        palette[:, current_position:section_end] = color.reshape(1, 1, 3)
+        current_position = section_end
+    
     return palette
 
 # File uploader
