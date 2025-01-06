@@ -56,7 +56,7 @@ if uploaded_file is not None:
     image = load_image(uploaded_file)
     if image is not None:
         # Display original image
-        st.image(image, caption="Uploaded Image", use_column_width=True)
+        st.image(image, caption="Uploaded Image", use_container_width=True)
         
         # Color extraction
         col1, col2 = st.columns([3, 1])
@@ -71,7 +71,7 @@ if uploaded_file is not None:
                 if colors is not None:
                     # Create and display palette
                     palette = create_palette_image(colors)
-                    st.image(palette, caption="Color Palette", use_column_width=True)
+                    st.image(palette, caption="Color Palette", use_container_width=True)
                     
                     # Display RGB values
                     st.write("RGB Values:")
