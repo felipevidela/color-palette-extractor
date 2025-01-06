@@ -2,6 +2,10 @@
 
 A Python tool that uses K-means clustering to extract dominant colors from images. This application analyzes images to create visual color palettes, making it ideal for designers, artists, and developers working on color-based projects.
 
+## 🌐 Try it Online!
+You can try the web version of this tool at:
+[https://color-palette-extractor-python.streamlit.app](https://color-palette-extractor-python.streamlit.app)
+
 ## 🎨 Overview
 This tool analyzes any input image and automatically identifies its most representative colors, creating a visual palette that captures the essence of the image's color scheme. It uses the K-means clustering algorithm to intelligently group similar colors and find the most dominant ones.
 
