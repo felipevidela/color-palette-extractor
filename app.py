@@ -44,7 +44,10 @@ def create_palette_image(colors):
     step = 500 // len(colors)
     
     for i, color in enumerate(colors):
-        palette[:, i*step:(i+1)*step] = color
+        # Usar slicing exacto sin transiciones
+        start = i * step
+        end = (i + 1) * step if i < len(colors) - 1 else 500
+        palette[:, start:end] = color
         
     return palette
 
